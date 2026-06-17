@@ -1,0 +1,6 @@
+{
+  "name": "NexOffice Pro",
+  "description": "A powerful offline productivity suite for documents, spreadsheets, presentations, scanned PDF docs, and daily utility tools.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
