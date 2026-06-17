@@ -1,19 +1,11 @@
 workflows:
-  android-build:
-    name: NexOffice Pro CI Build
+  android-debug:
+    name: NexOffice Pro Debug Build
 
     max_build_duration: 60
 
     environment:
       java: 17
-
-      # 🔐 ONLY REQUIRED FOR RELEASE BUILDS
-      android_signing:
-        - keystore_reference
-
-      vars:
-        GRADLE_OPTS: "-Dorg.gradle.daemon=false"
-        PACKAGE_NAME: "com.aistudio.nexoffice.pruxyz"
 
     cache:
       cache_paths:
@@ -24,17 +16,14 @@ workflows:
     triggering:
       events:
         - push
-        - pull_request
       branch_patterns:
         - pattern: main
-          include: true
-        - pattern: develop
           include: true
 
     scripts:
       - name: Checkout code
         script: |
-          echo "🚀 Building NexOffice Pro..."
+          echo "🚀 Starting NexOffice Pro Build"
 
       - name: Grant permissions
         script: |
@@ -44,30 +33,12 @@ workflows:
         script: |
           ./gradlew clean
 
-      - name: Download dependencies
-        script: |
-          ./gradlew dependencies
-
-      - name: Run tests
-        script: |
-          ./gradlew test
-
-      - name: Build Debug APK (NO SIGNING)
+      - name: Build Debug APK
         script: |
           ./gradlew assembleDebug
 
-      - name: Build Release APK (SIGNED)
-        script: |
-          ./gradlew assembleRelease
-
-      - name: Build AAB (Play Store)
-        script: |
-          ./gradlew bundleRelease
-
     artifacts:
       - app/build/outputs/apk/debug/**/*.apk
-      - app/build/outputs/apk/release/**/*.apk
-      - app/build/outputs/bundle/**/*.aab
 
     publishing:
       email:
