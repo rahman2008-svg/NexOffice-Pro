@@ -1,12 +1,18 @@
 workflows:
-  android-release:
-    name: NexOffice Pro - Android Build
+  android-build:
+    name: NexOffice Pro Build
+
     max_build_duration: 60
 
     environment:
       java: 17
+
+      # 🔐 IMPORTANT: Codemagic Dashboard এ যে keystore add করেছো তার নাম এখানে দিতে হবে
       android_signing:
         - keystore_reference
+
+      vars:
+        PACKAGE_NAME: "com.nexvora.nexoffice"
 
     cache:
       cache_paths:
@@ -24,19 +30,19 @@ workflows:
           include: true
 
     scripts:
-      - name: Checkout
+      - name: Checkout code
         script: |
-          echo "Starting NexOffice Pro Build..."
+          echo "Building NexOffice Pro..."
 
-      - name: Set Gradle Permissions
+      - name: Grant permissions
         script: |
           chmod +x ./gradlew
 
-      - name: Clean Project
+      - name: Clean project
         script: |
           ./gradlew clean
 
-      - name: Run Tests
+      - name: Run tests
         script: |
           ./gradlew test
 
@@ -48,9 +54,13 @@ workflows:
         script: |
           ./gradlew assembleRelease
 
+      - name: Build AAB (Play Store)
+        script: |
+          ./gradlew bundleRelease
+
     artifacts:
-      - app/build/outputs/**/*.apk
-      - app/build/outputs/**/*.aab
+      - app/build/outputs/apk/**/*.apk
+      - app/build/outputs/bundle/**/*.aab
 
     publishing:
       email:
